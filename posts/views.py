@@ -12,6 +12,9 @@ class PostListView(ListView):
     context_object_name = 'posts'
     ordering = ['-created_at']
 
+    def get_queryset(self):
+        return Post.objects.filter(status__name='Published')
+
 class PostDetailView(DetailView):
     model = Post
     template_name = 'posts/post_detail.html'
@@ -19,7 +22,7 @@ class PostDetailView(DetailView):
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     template_name = 'posts/post_form.html'
-    fields = ['title', 'content']
+    fields = ['title', 'content', 'status']
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -28,7 +31,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
     template_name = 'posts/post_form.html'
-    fields = ['title', 'content']
+    fields = ['title', 'content', 'status']
 
     def form_valid(self, form):
         form.instance.author = self.request.user
